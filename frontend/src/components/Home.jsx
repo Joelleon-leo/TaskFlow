@@ -1,14 +1,29 @@
 import React, { useState } from 'react'
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [isLogin, setIsLogin] = useState(true)
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
 
+  const navigate = useNavigate();
+
   async function handleLoginSubmit(e) {
     e.preventDefault()
     const Logindata = { username, password };
+
+    try {
+    const response = await axios.post(
+      "http://localhost:8000/login",
+      Logindata
+    );
+    console.log('Login successful:', response.data);
+    navigate("/todolist/" + response.data.user_id);
+  } catch (error) {
+    console.error('Error during login:', error);
+  }
+
 
   }
 

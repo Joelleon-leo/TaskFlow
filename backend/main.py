@@ -10,7 +10,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # your frontend
+    allow_origins=["*"],  # your frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,7 +20,7 @@ app.add_middleware(
 def insert_user(user: UserCreate):
     db = SessionLocal()
 
-    new_user = database_modals.User(
+    new_user = database_modals.Users(
         username=user.username,
         password=user.password
     )
@@ -33,12 +33,12 @@ def insert_user(user: UserCreate):
     return {"message": "User created", "id": new_user.id}
 
 @app.post("/login")
-def login_user(username: str, password: str):
+def login_user(user: UserCreate):
     db = SessionLocal()
 
     # 1. Find user by username
     user = db.query(database_modals.Users).filter(
-        database_modals.Users.username == username
+        database_modals.Users.username == user.username
     ).first()
 
     # 2. Check if user exists
@@ -47,7 +47,7 @@ def login_user(username: str, password: str):
         return {"error": "User not found"}
 
     # 3. Check password
-    if user.password != password:
+    if user.password != user.password:
         db.close()
         return {"error": "Wrong password"}
 
