@@ -1,8 +1,12 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-import urllib.parse
+from dotenv import load_dotenv
+import os
 
-password = urllib.parse.quote_plus("joel@2005")
-db_url=f"postgresql://postgres:{password}@localhost:5432/todo_db"
+load_dotenv()
+
+db_url = os.getenv("DATABASE_URL")
+if not db_url:
+    raise ValueError("DATABASE_URL is not set")
 engine=create_engine(db_url)
 SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
