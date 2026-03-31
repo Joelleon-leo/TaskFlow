@@ -18,13 +18,10 @@ const Home = () => {
       "http://localhost:8000/login",
       Logindata
     );
-    console.log('Login successful:', response.data);
     navigate("/todolist/" + response.data.user_id);
   } catch (error) {
     console.error('Error during login:', error);
   }
-
-
   }
 
   async function handleSignupSubmit(e) {
@@ -34,11 +31,17 @@ const Home = () => {
     try{
       const response = await axios.post('http://localhost:8000/signup', Signupdata);
       console.log('Signup successful:', response.data);
+      // switch to login view so user can log in
+      setIsLogin(true);
+      // clear password for security
+      setPassword('');
+      alert('Signup successful — please log in');
     }
     catch (error) {
       console.error('Error during signup:', error);
+      const msg = error?.response?.data?.detail || 'Signup failed';
+      alert(msg);
     }
-    
   }
 
   return (
